@@ -1,8 +1,8 @@
 import { Users } from "lucide-react";
-
+import { PageLayout } from "./PageLayout";
 const CommunityPage = () => {
   return (
-    <main>
+    <PageLayout>
       <div className="container py-16">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
@@ -42,7 +42,7 @@ const CommunityPage = () => {
           </div>
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 };
 
