@@ -95,12 +95,20 @@ return (
         {mounted ? (dark ? "☀️" : "🌙") : "🌙"}
       </button>
 
-      {/* CTA Button */}
+     {/* Signup Link */}
       <Link
-        href="/community"
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2 rounded-full font-medium shadow hover:shadow-lg hover:scale-105 transition duration-200"
+        href="/signup"
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-md font-medium hover:shadow-lg transition"
       >
-        Join Community
+        Sign Up
+      </Link>
+
+      {/* Login Link */}
+      <Link
+        href="/login"
+        className="text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium"
+      >
+        Login
       </Link>
 
     </div>

@@ -71,11 +71,7 @@ export const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <Link href="/community" onClick={() => setMobileOpen(false)}>
-              <button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 py-2 rounded-md">
-                Join Community
-              </button>
-            </Link>
+           
           </div>
         </div>
       )}
