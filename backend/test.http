@@ -1,32 +1,21 @@
+PATCH http://localhost:5000/ideas/abc/status
+Content-Type: application/json
+
+{
+  "status": "experiment"
+}
+###
+PATCH http://localhost:5000/ideas/1/status
+Content-Type: application/json
+
+{
+  "status": "invalid"
+}
+###
 POST http://localhost:5000/ideas
 Content-Type: application/json
 
 {
-  "title": "Test idea",
-  "description": "Testing learning loop"
-}
-###
-POST http://localhost:5000/experiments
-Content-Type: application/json
-
-{
-  "ideaId": 1,
-  "hypothesis": "This will improve engagement"
-}
-###
-POST http://localhost:5000/outcomes
-Content-Type: application/json
-
-{
-  "experimentId": 1,
-  "result": "Engagement increased",
-  "notes": "Worked well"
-}
-###
-POST http://localhost:5000/reflections
-Content-Type: application/json
-
-{
-  "outcomeId": 1,
-  "content": "We should use this approach again"
+  "title": "",
+  "description": ""
 }
