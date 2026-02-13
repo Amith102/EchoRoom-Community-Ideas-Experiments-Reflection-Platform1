@@ -1,28 +1,10 @@
-### Create Idea
-POST http://localhost:5000/ideas
+POST http://localhost:5000/outcomes
 Content-Type: application/json
 
 {
-  "title": "Test Idea",
-  "description": "Testing lifecycle"
+  "experimentId": 1,
+  "result": "Success",
+  "notes": "Users preferred new design"
 }
-
 ###
-
-### Move to experiment
-PATCH http://localhost:5000/ideas/3/status
-Content-Type: application/json
-
-{
-  "status": "experiment"
-}
-
-###
-
-###
-PATCH http://localhost:5000/ideas/3/status
-Content-Type: application/json
-
-{
-  "status": "reflection"
-}
+GET http://localhost:5000/outcomes/1

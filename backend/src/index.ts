@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import ideasRoutes from "./routes/ideas.routes";
 import cors from "cors";
 import experimentsRoutes from "./routes/experiments.routes";
+import outcomesRoutes from "./routes/outcomes.routes";
+
 
 
 const app = express();
@@ -12,6 +14,8 @@ app.use(cors({
 app.use(express.json());
 app.use("/ideas", ideasRoutes);
 app.use("/experiments", experimentsRoutes);
+app.use("/outcomes", outcomesRoutes);
+
 
 app.get("/health", (_req: Request, res: Response) => {
   res.json({
