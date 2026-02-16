@@ -13,9 +13,64 @@ interface Experiment {
   id: number;
   title: string;
   description: string;
-  status: string;
+  status: "planned" | "in-progress" | "completed";
+  statusLabel: "Planned" | "In Progress" | "Completed";
   progress: number;
 }
+
+interface BackendExperiment {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  progress?: number;
+}
+
+const STATUS_LABELS: Record<Experiment["status"], Experiment["statusLabel"]> = {
+  planned: "Planned",
+  "in-progress": "In Progress",
+  completed: "Completed",
+};
+
+const STATUS_PROGRESS: Record<Experiment["status"], number> = {
+  planned: 0,
+  "in-progress": 50,
+  completed: 100,
+};
+
+const normalizeStatus = (status: string): Experiment["status"] => {
+  const normalized = status.trim().toLowerCase().replace(/[_\s]+/g, "-");
+
+  if (
+    normalized === "planned" ||
+    normalized === "in-progress" ||
+    normalized === "completed"
+  ) {
+    return normalized;
+  }
+
+  return "planned";
+};
+
+const normalizeProgress = (
+  status: Experiment["status"],
+  progress?: number
+): number => {
+  if (typeof progress === "number" && Number.isFinite(progress)) {
+    return Math.max(0, Math.min(100, Math.round(progress)));
+  }
+  return STATUS_PROGRESS[status];
+};
+
+const normalizeExperiment = (exp: BackendExperiment): Experiment => {
+  const status = normalizeStatus(exp.status);
+  return {
+    ...exp,
+    status,
+    statusLabel: STATUS_LABELS[status],
+    progress: normalizeProgress(status, exp.progress),
+  };
+};
 
 export default function ExperimentsPage() {
 
@@ -33,9 +88,8 @@ export default function ExperimentsPage() {
         setLoading(true);
         setError(null);
 
-        const experimentsData = await apiFetch<Experiment[]>("/experiments");
-
-        setExperiments(experimentsData);
+        const experimentsData = await apiFetch<BackendExperiment[]>("/experiments");
+        setExperiments(experimentsData.map(normalizeExperiment));
 
       } catch (err: any) {
 
@@ -67,7 +121,7 @@ export default function ExperimentsPage() {
         body: JSON.stringify({
           title: "New Experiment",
           description: "Created from frontend",
-          status: "active",
+          status: "planned",
         }),
       });
 
@@ -77,7 +131,7 @@ export default function ExperimentsPage() {
         throw new Error(data.message || "Failed to create experiment");
       }
 
-      setExperiments([...experiments, data.data]);
+      setExperiments([...experiments, normalizeExperiment(data.data as BackendExperiment)]);
 
     } catch (err: any) {
 
@@ -90,15 +144,15 @@ export default function ExperimentsPage() {
 
   // Status text color
   const getStatusTextColor = (status: string) => {
-    if (status === "Completed") return "text-green-600 dark:text-green-400";
-    if (status === "In Progress") return "text-blue-600 dark:text-blue-400";
+    if (status === "completed") return "text-green-600 dark:text-green-400";
+    if (status === "in-progress") return "text-blue-600 dark:text-blue-400";
     return "text-gray-600 dark:text-gray-400";
   };
 
   // Progress bar color
   const getProgressColor = (status: string) => {
-    if (status === "Completed") return "bg-green-500";
-    if (status === "In Progress") return "bg-blue-500";
+    if (status === "completed") return "bg-green-500";
+    if (status === "in-progress") return "bg-blue-500";
     return "bg-gray-400";
   };
 
@@ -194,7 +248,7 @@ export default function ExperimentsPage() {
                 <div className="flex justify-between items-center mb-2">
 
                   <span className={`text-sm font-medium ${getStatusTextColor(exp.status)}`}>
-                    Status: {exp.status}
+                    Status: {exp.statusLabel}
                   </span>
 
                   <span className="text-sm text-gray-500 dark:text-gray-400">
