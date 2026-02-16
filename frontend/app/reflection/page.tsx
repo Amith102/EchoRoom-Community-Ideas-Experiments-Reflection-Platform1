@@ -18,10 +18,52 @@ interface Reflection {
   date: string;
 }
 
+interface ReflectionApiResponse {
+  id: number;
+  outcomeId: number;
+  content: string;
+  createdAt: string;
+}
+
+interface OutcomeApiResponse {
+  id: number;
+  result: string;
+}
+
 const outcomeColors: Record<string, string> = {
   Success: "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30",
   Mixed: "text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30",
   Failed: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
+};
+
+const formatReflectionDate = (createdAt?: string): string => {
+  if (!createdAt) return "Unknown date";
+
+  const parsed = new Date(createdAt);
+  if (Number.isNaN(parsed.getTime())) return "Unknown date";
+
+  return parsed.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const mapReflectionToViewModel = (
+  reflection: ReflectionApiResponse,
+  outcomeMap: Map<number, string>
+): Reflection => {
+  const outcome = outcomeMap.get(reflection.outcomeId) || "Outcome";
+  const title = `Outcome #${reflection.outcomeId}`;
+
+  return {
+    id: reflection.id,
+    title,
+    outcome,
+    learning: reflection.content || "No reflection content",
+    author: "Community member",
+    date: formatReflectionDate(reflection.createdAt),
+  };
 };
 
 export default function ReflectionPage() {
@@ -39,9 +81,20 @@ export default function ReflectionPage() {
         setLoading(true);
         setError(null);
 
-        const reflectionsData = await apiFetch<Reflection[]>("/reflections");
+        const [reflectionsData, outcomesData] = await Promise.all([
+          apiFetch<ReflectionApiResponse[]>("/reflections"),
+          apiFetch<OutcomeApiResponse[]>("/outcomes"),
+        ]);
 
-        setReflections(reflectionsData);
+        const outcomeMap = new Map<number, string>(
+          outcomesData.map((outcome) => [outcome.id, outcome.result])
+        );
+
+        const mappedReflections = reflectionsData.map((reflection) =>
+          mapReflectionToViewModel(reflection, outcomeMap)
+        );
+
+        setReflections(mappedReflections);
 
       } catch (err: any) {
 
