@@ -10,23 +10,30 @@ import LibraryIcon from "@/components/ui/library-icon";
 import ChartHistogramIcon from "@/components/ui/chart-histogram-icon";
 import BrightnessDownIcon from "@/components/ui/brightness-down-icon";
 import MoonIcon from "@/components/ui/moon-icon";
+import RadioIcon from "@/components/ui/radio-icon";
+import { Ripple } from "@/components/ui/ripple";
+import { MorphingText } from "@/components/ui/morphing-text"
+import { TypingAnimation } from "@/components/ui/typing-animation"
+import WifiIcon from "@/components/ui/wifi-icon";
+import WifiOffIcon from "@/components/ui/wifi-off-icon";
 
 
 export default function HomePage() {
   const { dark, toggleTheme } = useTheme();
-  const [backendStatus, setBackendStatus] = useState("Checking backend...");
+  const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/health")
-      .then((res) => res.json())
-      .then((data) => {
-        setBackendStatus("✅ Backend Connected: " + data.message);
-      })
-      .catch(() => {
-        setBackendStatus("❌ Backend Not Connected");
-      });
-  }, []);
+  fetch("http://localhost:5000/health")
+    .then(() => {
+      setBackendOnline(true);
+    })
+    .catch(() => {
+      setBackendOnline(false);
+    });
+}, []);
+
 
 return (
 
@@ -38,9 +45,14 @@ return (
   <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
     {/* Logo */}
-    <div className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-      EchoRoom
-    </div>
+    <div className="flex items-center gap-2 text-2xl font-extrabold">
+  <RadioIcon className="w-6 h-6 text-blue-600 dark:text-blue-700" />
+  
+  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+    EchoRoom
+  </span>
+</div>
+
 
     {/* Navigation Links */}
     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
@@ -132,7 +144,13 @@ return (
 
 
 {/* HERO */}
-<section className="relative max-w-5xl mx-auto text-center px-6 pt-20 pb-20">
+
+<section className="relative z-10 max-w-5xl mx-auto text-center px-6 pt-20 pb-32">
+
+<div className="absolute inset-0 h-[600px] w-full overflow-hidden">
+  <Ripple />
+</div>
+
 
   {/* Badge */}
   <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
@@ -141,24 +159,62 @@ return (
 
   {/* Heading */}
   <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-    Turn Ideas into{" "}
-    <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-      Actionable Learning
-    </span>
-  </h1>
+  Turn Ideas into
+</h1>
+
+<div className="mt-6 text-blue-600 dark:text-blue-400">
+
+  <MorphingText
+  texts={[
+    "Experiments",
+    "Insights",
+    "Knowledge",
+    "Impact",
+  ]}
+  className="h-[80px] md:h-[100px] lg:h-[110px]"
+/>
+
+</div>
+
+
 
   {/* Backend status */}
-  <div className="mt-4">
-    <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-      {backendStatus}
+  <div className="mt-2 flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md w-fit mx-auto">
+  {backendOnline === null ? (
+  <span className="text-xs text-slate-400">Checking...</span>
+) : backendOnline ? (
+  <>
+    <WifiIcon className="w-4 h-4 text-emerald-400 animate-pulse" />
+    <span className="text-xs font-medium text-emerald-400">
+      Backend Online
     </span>
-  </div>
+  </>
+) : (
+  <>
+    <WifiOffIcon className="w-4 h-4 text-rose-400" />
+    <span className="text-xs font-medium text-rose-400">
+      Backend Offline
+    </span>
+  </>
+)}
+
+</div>
+
 
   {/* Description */}
-  <p className="mt-6 text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-    EchoRoom helps communities transform ideas into experiments, insights,
-    and meaningful learning — collaboratively and transparently.
-  </p>
+  <div className="mt-6 text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+  <TypingAnimation
+    words={[
+      "Where ideas become experiments.",
+      "Experiments become insights.",
+      "Insights become knowledge.",
+      "Knowledge becomes impact."
+    ]}
+    loop
+    className="text-slate-600 dark:text-slate-300"
+  />
+</div>
+
 
   {/* Buttons */}
   <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
@@ -216,7 +272,8 @@ return (
 
 
       {/* FEATURES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24">
+     <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16 sm:pb-24">
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <FeatureCard
             emoji={<BulbSvg className="w-6 h-6" />}
