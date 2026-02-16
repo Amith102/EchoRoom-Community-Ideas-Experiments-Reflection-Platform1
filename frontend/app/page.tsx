@@ -16,6 +16,8 @@ import { MorphingText } from "@/components/ui/morphing-text"
 import { TypingAnimation } from "@/components/ui/typing-animation"
 import WifiIcon from "@/components/ui/wifi-icon";
 import WifiOffIcon from "@/components/ui/wifi-off-icon";
+import { Dock, DockIcon } from "@/components/ui/dock";
+import { useRouter } from "next/navigation";
 
 
 export default function HomePage() {
@@ -42,34 +44,35 @@ return (
       {/* NAVBAR */}
 <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
 
-  <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
     {/* Logo */}
-    <div className="flex items-center gap-2 text-2xl font-extrabold">
-  <RadioIcon className="w-6 h-6 text-blue-600 dark:text-blue-700" />
-  
-  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-    EchoRoom
-  </span>
+   <div className="flex items-center gap-2 text-2xl font-extrabold">
+  <RadioIcon
+    className={`w-6 h-6 ${
+      dark ? "text-white" : "text-slate-800"
+    }`}
+  />
+
+  <span
+  className={`
+    ${dark ? "text-white" : "text-slate-900"}
+    transition-colors
+    hover:text-blue-500
+  `}
+>
+  EchoRoom
+</span>
+
 </div>
 
 
+
     {/* Navigation Links */}
-    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
+    <div className="hidden md:flex items-center">
+  <NavbarDock dark={dark} />
+</div>
 
-      <Link href="/ideas" className="hover:text-blue-600 transition">
-        Ideas
-      </Link>
-
-      <Link href="/experiments" className="hover:text-blue-600 transition">
-        Experiments
-      </Link>
-
-      <Link href="/reflection" className="hover:text-blue-600 transition">
-        Reflection
-      </Link>
-
-    </div>
 
     {/* Right side */}
     <div className="flex items-center gap-4">
@@ -110,7 +113,7 @@ return (
       tracking-tight
       text-white
 
-      bg-gradient-to-r from-blue-500 to-indigo-600
+      bg-gradient-to-r from-blue-500 to-[#9CCFFF]
       
       
       
@@ -396,3 +399,52 @@ function FeatureCard({
   );
 }
 
+
+ function NavbarDock({ dark }: { dark: boolean }) {
+  const router = useRouter();
+
+  const iconColor = dark ? "text-blue-300" : "text-blue-700";
+
+  return (
+    <Dock
+      direction="middle"
+      className="bg-transparent border-none shadow-none"
+    >
+      {/* IDEAS */}
+      <DockIcon
+        onClick={() => router.push("/ideas")}
+        className="group relative w-12 h-12 flex items-center justify-center"
+      >
+        <BulbSvg className={`w-5 h-5 ${iconColor}`} />
+
+        <span className="pointer-events-none absolute -bottom-8 scale-0 group-hover:scale-100 transition rounded-md bg-black/80 text-white text-xs px-2 py-1">
+          Ideas
+        </span>
+      </DockIcon>
+
+      {/* EXPERIMENTS */}
+      <DockIcon
+        onClick={() => router.push("/experiments")}
+        className="group relative w-12 h-12 flex items-center justify-center"
+      >
+        <ChartHistogramIcon className={`w-5 h-5 ${iconColor}`} />
+
+        <span className="pointer-events-none absolute -bottom-8 scale-0 group-hover:scale-100 transition rounded-md bg-black/80 text-white text-xs px-2 py-1">
+          Experiments
+        </span>
+      </DockIcon>
+
+      {/* REFLECTION */}
+      <DockIcon
+        onClick={() => router.push("/reflection")}
+        className="group relative w-12 h-12 flex items-center justify-center"
+      >
+        <LibraryIcon className={`w-5 h-5 ${iconColor}`} />
+
+        <span className="pointer-events-none absolute -bottom-8 scale-0 group-hover:scale-100 transition rounded-md bg-black/80 text-white text-xs px-2 py-1">
+          Reflection
+        </span>
+      </DockIcon>
+    </Dock>
+  );
+}
