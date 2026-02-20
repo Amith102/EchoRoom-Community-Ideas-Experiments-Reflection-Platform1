@@ -183,38 +183,40 @@ export default function ExperimentsPage() {
           /* Experiments Grid */
           <div className="grid gap-6 md:grid-cols-2">
             {experiments.map((exp) => (
-              <div key={exp.id} className="card">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  {exp.title}
-                </h2>
+              <Link href={`/experiments/${exp.id}`} key={exp.id} className="block">
+                <div className="card h-full transition-transform hover:scale-[1.02] cursor-pointer">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    {exp.title}
+                  </h2>
 
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-                  {exp.description}
-                </p>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                    {exp.description}
+                  </p>
 
-                <div className="flex justify-between items-center mb-2">
-                  <span
-                    className={`text-sm font-medium ${getStatusTextColor(
-                      exp.status
-                    )}`}
-                  >
-                    Status: {exp.statusLabel}
-                  </span>
+                  <div className="flex justify-between items-center mb-2">
+                    <span
+                      className={`text-sm font-medium ${getStatusTextColor(
+                        exp.status
+                      )}`}
+                    >
+                      Status: {exp.statusLabel}
+                    </span>
 
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {exp.progress}%
-                  </span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {exp.progress}%
+                    </span>
+                  </div>
+
+                  <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full ${getProgressColor(
+                        exp.status
+                      )}`}
+                      style={{ width: `${exp.progress}%` }}
+                    />
+                  </div>
                 </div>
-
-                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${getProgressColor(
-                      exp.status
-                    )}`}
-                    style={{ width: `${exp.progress}%` }}
-                  />
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

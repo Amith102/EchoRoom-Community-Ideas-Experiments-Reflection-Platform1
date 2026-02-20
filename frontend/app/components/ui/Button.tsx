@@ -7,6 +7,7 @@ interface ButtonProps {
   size?: "sm" | "md" | "lg";
   type?: "button" | "submit" | "reset";
   className?: string;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -16,16 +17,14 @@ export default function Button({
   size = "md",
   type = "button",
   className = "",
+  disabled = false,
 }: ButtonProps) {
   const baseStyle = `
     group relative overflow-hidden
     rounded-full text-sm
     transition-all duration-300 ease-out
     transform
-    hover:-translate-y-1
-    hover:scale-[1.04]
-    active:translate-y-[2px]
-    active:scale-[0.97]
+    ${!disabled ? "hover:-translate-y-1 hover:scale-[1.04] active:translate-y-[2px] active:scale-[0.97]" : "opacity-50 cursor-not-allowed"}
     shadow-[0_8px_20px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.35)]
     hover:shadow-[0_14px_34px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(255,255,255,0.45)]
   `;
@@ -56,6 +55,7 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={`${baseStyle} ${sizes[size]} ${variants[variant]} ${className}`}
     >
       {/* Gloss */}
